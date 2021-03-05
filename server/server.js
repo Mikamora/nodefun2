@@ -14,6 +14,14 @@ let chirps = [
     {
         name: "turtles",
         body: "Hello my name is turtles"
+    },
+    {
+        name: "PUDD",
+        body: "Hello my name is PUDD"
+    },
+    {
+        name: "AJ",
+        body: "Hello my name is AJ"
     }
 ]
 
