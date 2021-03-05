@@ -2,22 +2,31 @@ const path = require("path");
 const fs = require("fs");
 const rp = require("request-promise");
 let dataPath = path.join(__dirname, "/downloads");
-let url = "https://reddit.com/r/popular.json";
+let reddit = "https://reddit.com/r/popular.json";
 
+const options = {
+    uri: "https://reddit.com/r/popular.json",
+    json: true //automatically parses the data into a json string on response. so now we could plug in options to rp, instead of the link 
+}
 
-rp(url)
-.then(html => {
-    JSON.parse(html).data.children.forEach(item => {
-        if(path.extname("lol.jpg") === path.extname(item) || path.extname("lol.gif") === path.extname(item) || path.extname("lol.png") === path.extname(item)){
-            let name = path.posix.basename(item)
-            let SaveDatFile = (localStorage) => {
-                localStorage.root.getFile(`/downloads/${name}`, {create: true})
-            } 
-            SaveDatFile();
-        }
+rp(options)
+    .then((html) => {
+        html.data.children.forEach(item => {
+            const e = path.extname(item.data.url);
+            const reqImageOptions = {
+                uri: item.data.url,
+                encoding: "base64"
+            }
+            if (e === ".jpg" || e === ".gifv" || e === ".png") {
+                rp(reqImageOptions)
+                .then(image => {
+                    fs.writeFile(`./downloads/${item.data.id}${e}`, image, "base64", (err) => {
+                        if (err) console.error(err);
+                    })
+                })
+            }
+        });
     })
-
-})
-.catch(err => {
-    console.error(err);
-})
+    .catch(err => {
+        console.error(err);
+    })

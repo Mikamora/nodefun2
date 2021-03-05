@@ -4,6 +4,11 @@ const rp = require("request-promise");
 let dataPath = path.join(__dirname, "popular-articles.json")
 let newArray = [];
 
+// const options = {
+//     uri: "https://fakeweb.com/.json",
+//     json:true //automatically parses the data into a json string on response. so now we could plug in options to rp, instead of the link 
+// }
+
 rp("https://reddit.com/r/popular.json")
     .then((html) => {
         JSON.parse(html).data.children.forEach(item => {
